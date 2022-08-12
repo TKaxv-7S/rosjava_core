@@ -20,6 +20,9 @@ task wrapper(type: Wrapper) {
 
 buildscript {
   apply from: "https://github.com/rosjava/rosjava_bootstrap/raw/kinetic/buildscript.gradle"
+  dependencies {
+    classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+  }
 }
 
 apply plugin: "catkin"

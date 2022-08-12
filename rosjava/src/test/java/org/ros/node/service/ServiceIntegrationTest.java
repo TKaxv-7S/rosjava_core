@@ -75,63 +75,65 @@ public class ServiceIntegrationTest extends RosTest {
       }
     }, nodeConfiguration);
 
-    assertTrue(countDownServiceServerListener.awaitMasterRegistrationSuccess(1, TimeUnit.SECONDS));
+    assertTrue(countDownServiceServerListener.awaitMasterRegistrationSuccess(10, TimeUnit.SECONDS));
 
     final CountDownLatch latch = new CountDownLatch(2);
-    nodeMainExecutor.execute(new AbstractNodeMain() {
-      @Override
-      public GraphName getDefaultNodeName() {
-        return GraphName.of("client");
-      }
-
-      @Override
-      public void onStart(ConnectedNode connectedNode) {
-        ServiceClient<rosjava_test_msgs.AddTwoIntsRequest, rosjava_test_msgs.AddTwoIntsResponse> serviceClient;
-        try {
-          serviceClient = connectedNode.newServiceClient(SERVICE_NAME, rosjava_test_msgs.AddTwoInts._TYPE);
-          // Test that requesting another client for the same service returns
-          // the same instance.
-          ServiceClient<?, ?> duplicate =
-              connectedNode.newServiceClient(SERVICE_NAME, rosjava_test_msgs.AddTwoInts._TYPE);
-          assertEquals(serviceClient, duplicate);
-        } catch (ServiceNotFoundException e) {
-          throw new RosRuntimeException(e);
+    synchronized (latch) {
+      nodeMainExecutor.execute(new AbstractNodeMain() {
+        @Override
+        public GraphName getDefaultNodeName() {
+          return GraphName.of("client");
         }
-        rosjava_test_msgs.AddTwoIntsRequest request = serviceClient.newMessage();
-        request.setA(2);
-        request.setB(2);
-        serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
-          @Override
-          public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
-            assertEquals(response.getSum(), 4);
-            latch.countDown();
-          }
 
-          @Override
-          public void onFailure(RemoteException e) {
-            throw new RuntimeException(e);
+        @Override
+        public void onStart(ConnectedNode connectedNode) {
+          ServiceClient<rosjava_test_msgs.AddTwoIntsRequest, rosjava_test_msgs.AddTwoIntsResponse> serviceClient;
+          try {
+            serviceClient = connectedNode.newServiceClient(SERVICE_NAME, rosjava_test_msgs.AddTwoInts._TYPE);
+            // Test that requesting another client for the same service returns
+            // the same instance.
+            ServiceClient<?, ?> duplicate =
+                    connectedNode.newServiceClient(SERVICE_NAME, rosjava_test_msgs.AddTwoInts._TYPE);
+            assertEquals(serviceClient, duplicate);
+          } catch (ServiceNotFoundException e) {
+            throw new RosRuntimeException(e);
           }
-        });
+          rosjava_test_msgs.AddTwoIntsRequest request = serviceClient.newMessage();
+          request.setA(2);
+          request.setB(2);
+          serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
+            @Override
+            public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
+              assertEquals(response.getSum(), 4);
+              latch.countDown();
+            }
 
-        // Regression test for issue 122.
-        request.setA(3);
-        request.setB(3);
-        serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
-          @Override
-          public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
-            assertEquals(response.getSum(), 6);
-            latch.countDown();
-          }
+            @Override
+            public void onFailure(RemoteException e) {
+              throw new RuntimeException(e);
+            }
+          });
 
-          @Override
-          public void onFailure(RemoteException e) {
-            throw new RuntimeException(e);
-          }
-        });
-      }
-    }, nodeConfiguration);
+          // Regression test for issue 122.
+          request.setA(3);
+          request.setB(3);
+          serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
+            @Override
+            public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
+              assertEquals(response.getSum(), 6);
+              latch.countDown();
+            }
 
-    assertTrue(latch.await(1, TimeUnit.SECONDS));
+            @Override
+            public void onFailure(RemoteException e) {
+              throw new RuntimeException(e);
+            }
+          });
+        }
+      }, nodeConfiguration);
+
+      assertTrue(latch.await(10, TimeUnit.SECONDS));
+    }
   }
 
   @Test

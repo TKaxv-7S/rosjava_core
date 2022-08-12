@@ -13,6 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
   compile project(':apache_xmlrpc_common')
@@ -30,6 +31,8 @@ dependencies {
   compile 'com.google.guava:guava:12.0'
   testCompile 'junit:junit:4.8.2'
   testCompile 'org.mockito:mockito-all:1.8.5'
+
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 jar {
