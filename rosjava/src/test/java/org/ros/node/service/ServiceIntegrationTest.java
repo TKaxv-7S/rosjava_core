@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.ros.RosTest;
 import org.ros.exception.DuplicateServiceException;
@@ -38,6 +40,8 @@ import java.util.concurrent.TimeUnit;
  * @author damonkohler@google.com (Damon Kohler)
  */
 public class ServiceIntegrationTest extends RosTest {
+
+  private static final Log log = LogFactory.getLog(ServiceIntegrationTest.class);
 
   private static final String SERVICE_NAME = "/add_two_ints";
 
@@ -62,6 +66,7 @@ public class ServiceIntegrationTest extends RosTest {
                       @Override
                       public void build(rosjava_test_msgs.AddTwoIntsRequest request,
                           rosjava_test_msgs.AddTwoIntsResponse response) {
+                        log.info("获取A:" + request.getA() + ",获取B:" + request.getB());
                         response.setSum(request.getA() + request.getB());
                       }
                     });
@@ -104,6 +109,7 @@ public class ServiceIntegrationTest extends RosTest {
           serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
             @Override
             public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
+              log.info("结果:" + response.getSum());
               assertEquals(response.getSum(), 4);
               latch.countDown();
             }
@@ -120,6 +126,7 @@ public class ServiceIntegrationTest extends RosTest {
           serviceClient.call(request, new ServiceResponseListener<rosjava_test_msgs.AddTwoIntsResponse>() {
             @Override
             public void onSuccess(rosjava_test_msgs.AddTwoIntsResponse response) {
+              log.info("结果:" + response.getSum());
               assertEquals(response.getSum(), 6);
               latch.countDown();
             }
