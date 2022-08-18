@@ -15,55 +15,23 @@
     <packaging>jar</packaging>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_common</artifactId>
-            <version>0.3.7</version>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.8.0</version>
         </dependency>
+
         <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_server</artifactId>
-            <version>0.3.7</version>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_client</artifactId>
-            <version>0.3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>message_generation</artifactId>
-            <version>0.3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_messages</groupId>
-            <artifactId>rosgraph_msgs</artifactId>
-            <version>[1.11,1.12)</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_messages</groupId>
-            <artifactId>geometry_msgs</artifactId>
-            <version>[1.12,1.13)</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_messages</groupId>
-            <artifactId>nav_msgs</artifactId>
-            <version>[1.12,1.13)</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ros.rosjava_messages</groupId>
-            <artifactId>tf2_msgs</artifactId>
-            <version>[0.5,0.6)</version>
-            <scope>runtime</scope>
-        </dependency>
+
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
             <version>2.1.1</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -71,6 +39,12 @@
             <artifactId>log4j-to-slf4j</artifactId>
             <version>2.17.2</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>12.0</version>
         </dependency>
 
         <!--<dependency>
@@ -81,10 +55,72 @@
         </dependency>-->
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>12.0</version>
-            <scope>runtime</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>rosjava_test_msgs</artifactId>
+            <version>0.3.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_core</groupId>
+            <artifactId>apache_xmlrpc_server</artifactId>
+            <version>0.3.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_core</groupId>
+            <artifactId>apache_xmlrpc_client</artifactId>
+            <version>0.3.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_core</groupId>
+            <artifactId>message_generation</artifactId>
+            <version>0.3.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>rosgraph_msgs</artifactId>
+            <version>1.11.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>std_msgs</artifactId>
+            <version>0.5.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>geometry_msgs</artifactId>
+            <version>1.12.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>nav_msgs</artifactId>
+            <version>1.12.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ros.rosjava_messages</groupId>
+            <artifactId>tf2_msgs</artifactId>
+            <version>0.5.20</version>
         </dependency>
     </dependencies>
 

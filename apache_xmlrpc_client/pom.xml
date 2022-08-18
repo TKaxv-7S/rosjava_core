@@ -14,11 +14,13 @@
     <version>0.3.7</version>
 
     <dependencies>
+
         <dependency>
             <groupId>org.ros.rosjava_core</groupId>
             <artifactId>apache_xmlrpc_common</artifactId>
             <version>0.3.7</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>ws-commons-util</artifactId>
