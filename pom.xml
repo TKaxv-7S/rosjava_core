@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.ros.rosjava_core</groupId>
+    <artifactId>rosjava-all</artifactId>
+    <version>0.3.7</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>apache_xmlrpc_common</module>
+        <module>apache_xmlrpc_server</module>
+        <module>apache_xmlrpc_client</module>
+        <module>message_generation</module>
+        <module>rosjava</module>
+<!--        <module>gradle_plugins</module>-->
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>maven.repo1</id>
+            <name>maven repo1</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>maven.github</id>
+            <name>maven github</name>
+            <url>https://raw.githubusercontent.com/rosjava/rosjava_mvn_repo/master/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <!--<repository>
+            <id>maven.springsource</id>
+            <name>maven springsource</name>
+            <url>http://repository.springsource.com/maven/bundles/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>-->
+    </repositories>
+
+</project>
