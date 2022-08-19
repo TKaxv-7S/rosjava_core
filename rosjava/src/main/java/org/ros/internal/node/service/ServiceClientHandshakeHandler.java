@@ -18,9 +18,9 @@ package org.ros.internal.node.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.MessageEvent;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.MessageEvent;
 import org.ros.internal.transport.BaseClientHandshakeHandler;
 import org.ros.internal.transport.ConnectionHeader;
 import org.ros.internal.transport.tcp.TcpClientPipelineFactory;
@@ -62,7 +62,7 @@ class ServiceClientHandshakeHandler<T, S> extends BaseClientHandshakeHandler {
   @Override
   protected void onSuccess(ConnectionHeader incommingConnectionHeader, ChannelHandlerContext ctx,
       MessageEvent e) {
-    ChannelPipeline pipeline = e.getChannel().getPipeline();
+    ChannelPipeline pipeline = ctx.channel().pipeline();
     pipeline.remove(TcpClientPipelineFactory.LENGTH_FIELD_BASED_FRAME_DECODER);
     pipeline.remove(ServiceClientHandshakeHandler.this);
     pipeline.addLast("ResponseDecoder", new ServiceResponseDecoder<S>());

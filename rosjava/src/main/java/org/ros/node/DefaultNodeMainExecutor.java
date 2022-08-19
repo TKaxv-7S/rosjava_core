@@ -17,18 +17,11 @@
 package org.ros.node;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.google.common.collect.*;
 import org.ros.concurrent.DefaultScheduledExecutorService;
 import org.ros.namespace.GraphName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
@@ -42,7 +35,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class DefaultNodeMainExecutor implements NodeMainExecutor {
 
   private static final boolean DEBUG = false;
-  private static final Log log = LogFactory.getLog(DefaultNodeMainExecutor.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultNodeMainExecutor.class);
 
   private final NodeFactory nodeFactory;
   private final ScheduledExecutorService scheduledExecutorService;

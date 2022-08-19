@@ -14,8 +14,13 @@
         <module>apache_xmlrpc_client</module>
         <module>message_generation</module>
         <module>rosjava</module>
-<!--        <module>gradle_plugins</module>-->
+        <!--        <module>gradle_plugins</module>-->
     </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <rosjava-all.version>0.3.7</rosjava-all.version>
+    </properties>
 
     <build>
         <plugins>
@@ -23,12 +28,137 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.1.74.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-to-slf4j</artifactId>
+                <version>2.17.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>31.1-jre</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>3.8.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-pool</groupId>
+                <artifactId>commons-pool</artifactId>
+                <version>1.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>3.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>ws-commons-util</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>dnsjava</groupId>
+                <artifactId>dnsjava</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ros.rosjava_core</groupId>
+                <artifactId>apache_xmlrpc_common</artifactId>
+                <version>${rosjava-all.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ros.rosjava_core</groupId>
+                <artifactId>apache_xmlrpc_server</artifactId>
+                <version>${rosjava-all.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ros.rosjava_core</groupId>
+                <artifactId>apache_xmlrpc_client</artifactId>
+                <version>${rosjava-all.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ros.rosjava_core</groupId>
+                <artifactId>message_generation</artifactId>
+                <version>${rosjava-all.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.2</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>1.10.19</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ros.rosjava_messages</groupId>
+                <artifactId>rosjava_test_msgs</artifactId>
+                <version>0.3.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!--<dependency>
+                <groupId>org.ros.rosjava_bootstrap</groupId>
+                <artifactId>gradle_plugins</artifactId>
+                <version>0.3.7</version>
+                <scope>compile</scope>
+            </dependency>-->
+
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>

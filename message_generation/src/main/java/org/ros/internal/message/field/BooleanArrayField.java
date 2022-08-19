@@ -18,7 +18,7 @@ package org.ros.internal.message.field;
 
 import com.google.common.base.Preconditions;
 
-import org.jboss.netty.buffer.ChannelBuffer;
+import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -41,7 +41,6 @@ public class BooleanArrayField extends Field {
     setValue(new boolean[Math.max(0, size)]);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public boolean[] getValue() {
     return value;
@@ -54,7 +53,7 @@ public class BooleanArrayField extends Field {
   }
 
   @Override
-  public void serialize(ChannelBuffer buffer) {
+  public void serialize(ByteBuf buffer) {
     if (size < 0) {
       buffer.writeInt(value.length);
     }
@@ -64,7 +63,7 @@ public class BooleanArrayField extends Field {
   }
 
   @Override
-  public void deserialize(ChannelBuffer buffer) {
+  public void deserialize(ByteBuf buffer) {
     int currentSize = size;
     if (currentSize < 0) {
       currentSize = buffer.readInt();

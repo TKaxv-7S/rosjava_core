@@ -16,11 +16,11 @@
 
 package org.ros.internal.node.service;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelHandler;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.MessageEvent;
+import io.netty.channel.SimpleChannelHandler;
 import org.ros.exception.ServiceException;
 import org.ros.internal.message.MessageBufferPool;
 import org.ros.message.MessageDeserializer;
@@ -30,6 +30,7 @@ import org.ros.node.service.ServiceResponseBuilder;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -58,7 +59,7 @@ class ServiceRequestHandler<T, S> extends SimpleChannelHandler {
     messageBufferPool = new MessageBufferPool();
   }
 
-  private void handleRequest(ChannelBuffer requestBuffer, ChannelBuffer responseBuffer)
+  private void handleRequest(ByteBuf requestBuffer, ByteBuf responseBuffer)
       throws ServiceException {
     T request = deserializer.deserialize(requestBuffer);
     S response = messageFactory.newFromType(serviceDeclaration.getType());
@@ -67,33 +68,33 @@ class ServiceRequestHandler<T, S> extends SimpleChannelHandler {
   }
 
   private void handleSuccess(final ChannelHandlerContext ctx, ServiceServerResponse response,
-      ChannelBuffer responseBuffer) {
+      ByteBuf responseBuffer) {
     response.setErrorCode(1);
     response.setMessageLength(responseBuffer.readableBytes());
     response.setMessage(responseBuffer);
-    ctx.getChannel().write(response);
+    ctx.channel().write(response);
   }
 
   private void handleError(final ChannelHandlerContext ctx, ServiceServerResponse response,
       String message) {
     response.setErrorCode(0);
-    ByteBuffer encodedMessage = Charset.forName("US-ASCII").encode(message);
+    ByteBuffer encodedMessage = StandardCharsets.US_ASCII.encode(message);
     response.setMessageLength(encodedMessage.limit());
-    response.setMessage(ChannelBuffers.wrappedBuffer(encodedMessage));
-    ctx.getChannel().write(response);
+    response.setMessage(Unpooled.wrappedBuffer(encodedMessage));
+    ctx.channel().write(response);
   }
 
   @Override
   public void messageReceived(final ChannelHandlerContext ctx, MessageEvent e) throws Exception {
     // Although the ChannelHandlerContext is explicitly documented as being safe
     // to keep for later use, the MessageEvent is not. So, we make a defensive
-    // copy of the ChannelBuffer.
-    final ChannelBuffer requestBuffer = ((ChannelBuffer) e.getMessage()).copy();
+    // copy of the ByteBuf.
+    final ByteBuf requestBuffer = ((ByteBuf) e.getMessage()).copy();
     executorService.execute(new Runnable() {
       @Override
       public void run() {
         ServiceServerResponse response = new ServiceServerResponse();
-        ChannelBuffer responseBuffer = messageBufferPool.acquire();
+        ByteBuf responseBuffer = messageBufferPool.acquire();
         boolean success;
         try {
           handleRequest(requestBuffer, responseBuffer);

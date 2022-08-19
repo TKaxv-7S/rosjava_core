@@ -16,58 +16,58 @@
 
 package org.ros.internal.message;
 
+import io.netty.buffer.ByteBuf;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.StackObjectPool;
-import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.exception.RosMessageRuntimeException;
 
 /**
- * A pool of {@link ChannelBuffer}s for serializing and deserializing messages.
+ * A pool of {@link ByteBuf}s for serializing and deserializing messages.
  * <p>
- * By contract, {@link ChannelBuffer}s provided by {@link #acquire()} must be
- * returned using {@link #release(ChannelBuffer)}.
+ * By contract, {@link ByteBuf}s provided by {@link #acquire()} must be
+ * returned using {@link #release(ByteBuf)}.
  * 
  * @author damonkohler@google.com (Damon Kohler)
  */
 public class MessageBufferPool {
 
-  private final ObjectPool<ChannelBuffer> pool;
+  private final ObjectPool<ByteBuf> pool;
 
   public MessageBufferPool() {
-    pool = new StackObjectPool<ChannelBuffer>(new PoolableObjectFactory<ChannelBuffer>() {
+    pool = new StackObjectPool<ByteBuf>(new PoolableObjectFactory<ByteBuf>() {
       @Override
-      public ChannelBuffer makeObject() throws Exception {
+      public ByteBuf makeObject() throws Exception {
         return MessageBuffers.dynamicBuffer();
       }
 
       @Override
-      public void destroyObject(ChannelBuffer channelBuffer) throws Exception {
+      public void destroyObject(ByteBuf channelBuffer) throws Exception {
       }
 
       @Override
-      public boolean validateObject(ChannelBuffer channelBuffer) {
+      public boolean validateObject(ByteBuf channelBuffer) {
         return true;
       }
 
       @Override
-      public void activateObject(ChannelBuffer channelBuffer) throws Exception {
+      public void activateObject(ByteBuf channelBuffer) throws Exception {
       }
 
       @Override
-      public void passivateObject(ChannelBuffer channelBuffer) throws Exception {
+      public void passivateObject(ByteBuf channelBuffer) throws Exception {
         channelBuffer.clear();
       }
     });
   }
 
   /**
-   * Acquired {@link ChannelBuffer}s must be returned using
-   * {@link #release(ChannelBuffer)}.
+   * Acquired {@link ByteBuf}s must be returned using
+   * {@link #release(ByteBuf)}.
    * 
-   * @return an unused {@link ChannelBuffer}
+   * @return an unused {@link ByteBuf}
    */
-  public ChannelBuffer acquire() {
+  public ByteBuf acquire() {
     try {
       return pool.borrowObject();
     } catch (Exception e) {
@@ -76,12 +76,12 @@ public class MessageBufferPool {
   }
 
   /**
-   * Release a previously acquired {@link ChannelBuffer}.
+   * Release a previously acquired {@link ByteBuf}.
    * 
    * @param channelBuffer
-   *          the {@link ChannelBuffer} to release
+   *          the {@link ByteBuf} to release
    */
-  public void release(ChannelBuffer channelBuffer) {
+  public void release(ByteBuf channelBuffer) {
     try {
       pool.returnObject(channelBuffer);
     } catch (Exception e) {

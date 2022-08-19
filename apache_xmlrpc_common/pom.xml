@@ -11,20 +11,17 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apache_xmlrpc_common</artifactId>
-    <version>0.3.7</version>
 
     <dependencies>
 
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>ws-commons-util</artifactId>
-            <version>1.0.1</version>
         </dependency>
 
     </dependencies>

@@ -16,7 +16,7 @@
 
 package org.ros.internal.message;
 
-import org.jboss.netty.buffer.ChannelBuffer;
+import io.netty.buffer.ByteBuf;
 import org.ros.internal.message.field.Field;
 import org.ros.message.Duration;
 import org.ros.message.MessageIdentifier;
@@ -85,7 +85,7 @@ public interface RawMessage extends Message {
 
   byte getInt8(String name);
 
-  ChannelBuffer getInt8Array(String name);
+  ByteBuf getInt8Array(String name);
 
   <T extends Message> T getMessage(String name);
 
@@ -201,7 +201,7 @@ public interface RawMessage extends Message {
 
   void setUInt8Array(String name, byte[] value);
 
-  void setChannelBuffer(String name, ChannelBuffer value);
+  void setChannelBuffer(String name, ByteBuf value);
 
-  ChannelBuffer getChannelBuffer(String name);
+  ByteBuf getChannelBuffer(String name);
 }

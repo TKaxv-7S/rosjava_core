@@ -18,7 +18,7 @@ package org.ros.internal.message.field;
 
 import com.google.common.base.Preconditions;
 
-import org.jboss.netty.buffer.ChannelBuffer;
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
@@ -58,12 +58,12 @@ class ValueField<T> extends Field {
   }
 
   @Override
-  public void serialize(ChannelBuffer buffer) {
+  public void serialize(ByteBuf buffer) {
     type.serialize(getValue(), buffer);
   }
 
   @Override
-  public void deserialize(ChannelBuffer buffer) {
+  public void deserialize(ByteBuf buffer) {
     Preconditions.checkState(!isConstant);
     setValue(type.<T>deserialize(buffer));
   }

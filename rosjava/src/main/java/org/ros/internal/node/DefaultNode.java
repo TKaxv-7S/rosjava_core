@@ -17,13 +17,11 @@
 package org.ros.internal.node;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import org.apache.commons.logging.Log;
 import org.ros.Parameters;
+import org.ros.Topics;
 import org.ros.concurrent.CancellableLoop;
 import org.ros.concurrent.ListenerGroup;
 import org.ros.concurrent.SignalRunnable;
-import org.ros.exception.RemoteException;
 import org.ros.exception.ServiceNotFoundException;
 import org.ros.internal.message.service.ServiceDescription;
 import org.ros.internal.message.topic.TopicDescription;
@@ -43,31 +41,20 @@ import org.ros.internal.node.topic.PublisherFactory;
 import org.ros.internal.node.topic.SubscriberFactory;
 import org.ros.internal.node.topic.TopicDeclaration;
 import org.ros.internal.node.topic.TopicParticipantManager;
-import org.ros.internal.node.xmlrpc.XmlRpcTimeoutException;
-import org.ros.message.MessageDeserializer;
-import org.ros.message.MessageFactory;
-import org.ros.message.MessageSerializationFactory;
-import org.ros.message.MessageSerializer;
-import org.ros.message.Time;
+import org.ros.message.*;
 import org.ros.namespace.GraphName;
 import org.ros.namespace.NameResolver;
 import org.ros.namespace.NodeNameResolver;
-import org.ros.node.ConnectedNode;
-import org.ros.node.DefaultNodeFactory;
-import org.ros.node.Node;
-import org.ros.node.NodeConfiguration;
-import org.ros.node.NodeListener;
+import org.ros.node.*;
 import org.ros.node.parameter.ParameterTree;
 import org.ros.node.service.ServiceClient;
 import org.ros.node.service.ServiceResponseBuilder;
 import org.ros.node.service.ServiceServer;
-import org.ros.node.topic.DefaultPublisherListener;
-import org.ros.node.topic.DefaultSubscriberListener;
-import org.ros.node.topic.Publisher;
-import org.ros.node.topic.Subscriber;
-import org.ros.node.topic.TransportHints;
+import org.ros.node.topic.*;
 import org.ros.time.ClockTopicTimeProvider;
 import org.ros.time.TimeProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -113,7 +100,7 @@ public class DefaultNode implements ConnectedNode {
   private final ServiceFactory serviceFactory;
   private final Registrar registrar;
 
-  private RosoutLogger log;
+  private Logger log;
   private TimeProvider timeProvider;
 
   /**
@@ -185,8 +172,9 @@ public class DefaultNode implements ConnectedNode {
     // requesting the use_sim_time parameter.
     final CountDownLatch rosoutLatch = new CountDownLatch(1);
 
-    log = new RosoutLogger(this);
-    log.getPublisher().addListener(new DefaultPublisherListener<rosgraph_msgs.Log>() {
+    log = LoggerFactory.getLogger(this.getName().toString());
+    Publisher<rosgraph_msgs.Log> publisher = this.newPublisher(Topics.ROSOUT, rosgraph_msgs.Log._TYPE);
+    publisher.addListener(new DefaultPublisherListener<rosgraph_msgs.Log>() {
       @Override
       public void onMasterRegistrationSuccess(Publisher<rosgraph_msgs.Log> registrant) {
         rosoutLatch.countDown();
@@ -407,7 +395,7 @@ public class DefaultNode implements ConnectedNode {
   }
 
   @Override
-  public Log getLog() {
+  public Logger getLog() {
     return log;
   }
 
@@ -436,10 +424,8 @@ public class DefaultNode implements ConnectedNode {
             System.err.println("Failed to unregister service: " + serviceServer.getName());
           }
         }
-      } catch (XmlRpcTimeoutException e) {
-        log.error(e);
-      } catch (RemoteException e) {
-        log.error(e);
+      } catch (Exception e) {
+        log.error("error", e);
       }
     }
     for (ServiceClient<?, ?> serviceClient : serviceManager.getClients()) {

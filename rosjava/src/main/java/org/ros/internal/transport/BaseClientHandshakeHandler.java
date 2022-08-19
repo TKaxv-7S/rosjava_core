@@ -16,10 +16,10 @@
 
 package org.ros.internal.transport;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.MessageEvent;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelStateEvent;
+import io.netty.channel.MessageEvent;
 import org.ros.concurrent.ListenerGroup;
 import org.ros.concurrent.SignalRunnable;
 import org.ros.internal.transport.tcp.AbstractNamedChannelHandler;
@@ -53,7 +53,7 @@ public abstract class BaseClientHandshakeHandler extends AbstractNamedChannelHan
 
   @Override
   public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-    ChannelBuffer buffer = (ChannelBuffer) e.getMessage();
+    ByteBuf buffer = (ByteBuf) e.getMessage();
     ConnectionHeader connectionHeader = ConnectionHeader.decode(buffer);
     if (clientHandshake.handshake(connectionHeader)) {
       onSuccess(connectionHeader, ctx, e);

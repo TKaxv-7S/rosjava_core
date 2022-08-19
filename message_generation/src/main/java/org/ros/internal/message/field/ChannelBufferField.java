@@ -17,9 +17,8 @@
 package org.ros.internal.message.field;
 
 import com.google.common.base.Preconditions;
-
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import org.ros.internal.message.MessageBuffers;
 
 import java.nio.ByteOrder;
@@ -31,7 +30,7 @@ public class ChannelBufferField extends Field {
 
   private final int size;
 
-  private ChannelBuffer value;
+  private ByteBuf value;
 
   public static ChannelBufferField newVariable(FieldType type, String name, int size) {
     return new ChannelBufferField(type, name, size);
@@ -45,7 +44,7 @@ public class ChannelBufferField extends Field {
 
   @SuppressWarnings("unchecked")
   @Override
-  public ChannelBuffer getValue() {
+  public ByteBuf getValue() {
     // Return a defensive duplicate. Unlike with copy(), duplicated
     // ChannelBuffers share the same backing array, so this is relatively cheap.
     return value.duplicate();
@@ -53,11 +52,12 @@ public class ChannelBufferField extends Field {
 
   @Override
   public void setValue(Object value) {
-    ChannelBuffer channelBufferValue = null;
+    ByteBuf channelBufferValue = null;
     if (value instanceof byte[]) {
-      channelBufferValue = ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, byte[].class.cast(value));
-    } else if (value instanceof ChannelBuffer) {
-      channelBufferValue = ChannelBuffer.class.cast(value);
+      channelBufferValue = Unpooled.wrappedBuffer(byte[].class.cast(value));
+      channelBufferValue.order(ByteOrder.LITTLE_ENDIAN);
+    } else if (value instanceof ByteBuf) {
+      channelBufferValue = ByteBuf.class.cast(value);
     }
     Preconditions.checkArgument(channelBufferValue.order() == ByteOrder.LITTLE_ENDIAN);
     Preconditions.checkArgument(size < 0 || channelBufferValue.readableBytes() == size);
@@ -65,7 +65,7 @@ public class ChannelBufferField extends Field {
   }
 
   @Override
-  public void serialize(ChannelBuffer buffer) {
+  public void serialize(ByteBuf buffer) {
     if (size < 0) {
       buffer.writeInt(value.readableBytes());
     }
@@ -75,7 +75,7 @@ public class ChannelBufferField extends Field {
   }
 
   @Override
-  public void deserialize(ChannelBuffer buffer) {
+  public void deserialize(ByteBuf buffer) {
     int currentSize = size;
     if (currentSize < 0) {
       currentSize = buffer.readInt();
@@ -90,7 +90,7 @@ public class ChannelBufferField extends Field {
 
   @Override
   public String getJavaTypeName() {
-    return "org.jboss.netty.buffer.ChannelBuffer";
+    return "io.netty.buffer.ByteBuf";
   }
 
   @Override

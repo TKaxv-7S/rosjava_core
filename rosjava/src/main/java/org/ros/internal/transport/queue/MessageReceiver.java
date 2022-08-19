@@ -20,9 +20,9 @@ import org.ros.concurrent.CircularBlockingDeque;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.MessageEvent;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.MessageEvent;
 import org.ros.internal.transport.tcp.AbstractNamedChannelHandler;
 import org.ros.message.MessageDeserializer;
 
@@ -53,12 +53,12 @@ public class MessageReceiver<T> extends AbstractNamedChannelHandler {
 
   @Override
   public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-    ChannelBuffer buffer = (ChannelBuffer) e.getMessage();
+    ByteBuf buffer = (ByteBuf) e.getMessage();
     if (DEBUG) {
       log.info(String.format("Received %d byte message.", buffer.readableBytes()));
     }
     // We have to make a defensive copy of the buffer here because Netty does
-    // not guarantee that the returned ChannelBuffer will not be reused.
+    // not guarantee that the returned ByteBuf will not be reused.
     lazyMessages.addLast(new LazyMessage<T>(buffer.copy(), deserializer));
     super.messageReceived(ctx, e);
   }
