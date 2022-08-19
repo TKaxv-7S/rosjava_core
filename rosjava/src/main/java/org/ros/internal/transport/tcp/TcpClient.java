@@ -18,13 +18,20 @@ package org.ros.internal.transport.tcp;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
-import io.netty.channel.group.ChannelGroup;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBufferFactory;
+import org.jboss.netty.buffer.HeapChannelBufferFactory;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFactory;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.ros.exception.RosRuntimeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 import java.nio.ByteOrder;
@@ -38,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 public class TcpClient {
 
   private static final boolean DEBUG = false;
-  private static final Logger log = LoggerFactory.getLogger(TcpClient.class);
+  private static final Log log = LogFactory.getLog(TcpClient.class);
 
   private static final int DEFAULT_CONNECTION_TIMEOUT_DURATION = 5;
   private static final TimeUnit DEFAULT_CONNECTION_TIMEOUT_UNIT = TimeUnit.SECONDS;
@@ -47,30 +54,28 @@ public class TcpClient {
   private final ChannelGroup channelGroup;
   private final ChannelFactory channelFactory;
   private final ChannelBufferFactory channelBufferFactory;
-  private final Bootstrap bootstrap;
+  private final ClientBootstrap bootstrap;
   private final List<NamedChannelHandler> namedChannelHandlers;
 
   private Channel channel;
 
   public TcpClient(final ChannelGroup channelGroup, final Executor executor) {
     this.channelGroup = channelGroup;
-    channelFactory = new channelFactory(executor, executor);
+    channelFactory = new NioClientSocketChannelFactory(executor, executor);
     channelBufferFactory = new HeapChannelBufferFactory(ByteOrder.LITTLE_ENDIAN);
-    bootstrap = new Bootstrap();
-    bootstrap.channelFactory(channelFactory);
-//    bootstrap = new ClientBootstrap(channelFactory);
-    bootstrap.option("bufferFactory", channelBufferFactory);
+    bootstrap = new ClientBootstrap(channelFactory);
+    bootstrap.setOption("bufferFactory", channelBufferFactory);
     setConnectionTimeout(DEFAULT_CONNECTION_TIMEOUT_DURATION, DEFAULT_CONNECTION_TIMEOUT_UNIT);
     setKeepAlive(DEFAULT_KEEP_ALIVE);
     namedChannelHandlers = Lists.newArrayList();
   }
 
-  public void setConnectionTimeout(final int duration, final TimeUnit unit) {
-    bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, (int) unit.toMillis(duration));
+  public void setConnectionTimeout(final long duration, final TimeUnit unit) {
+    bootstrap.setOption("connectionTimeoutMillis", TimeUnit.MILLISECONDS.convert(duration, unit));
   }
 
   public void setKeepAlive(final boolean value) {
-    bootstrap.option(ChannelOption.SO_KEEPALIVE, value);
+    bootstrap.setOption("keepAlive", value);
   }
 
   public void addNamedChannelHandler(final NamedChannelHandler namedChannelHandler) {
@@ -109,7 +114,7 @@ public class TcpClient {
     return channel;
   }
 
-  public ChannelFuture write(final ByteBuf buffer) {
+  public ChannelFuture write(final ChannelBuffer buffer) {
     Preconditions.checkNotNull(channel);
     Preconditions.checkNotNull(buffer);
     return channel.write(buffer);

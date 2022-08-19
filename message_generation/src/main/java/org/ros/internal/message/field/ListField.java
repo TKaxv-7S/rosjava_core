@@ -18,7 +18,7 @@ package org.ros.internal.message.field;
 
 import com.google.common.base.Preconditions;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class ListField<T> extends Field {
   }
 
   @Override
-  public void serialize(ByteBuf buffer) {
+  public void serialize(ChannelBuffer buffer) {
     buffer.writeInt(value.size());
     for (T v : value) {
       type.serialize(v, buffer);
@@ -64,7 +64,7 @@ public class ListField<T> extends Field {
   }
 
   @Override
-  public void deserialize(ByteBuf buffer) {
+  public void deserialize(ChannelBuffer buffer) {
     value.clear();
     int size = buffer.readInt();
     for (int i = 0; i < size; i++) {

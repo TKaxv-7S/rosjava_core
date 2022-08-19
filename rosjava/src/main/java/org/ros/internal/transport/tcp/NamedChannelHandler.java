@@ -16,9 +16,9 @@
 
 package org.ros.internal.transport.tcp;
 
-import io.netty.channel.ChannelDownstreamHandler;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelUpstreamHandler;
+import org.jboss.netty.channel.ChannelDownstreamHandler;
+import org.jboss.netty.channel.ChannelHandler;
+import org.jboss.netty.channel.ChannelUpstreamHandler;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)

@@ -16,7 +16,7 @@
 
 package org.ros.internal.message.field;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
@@ -38,9 +38,9 @@ public interface FieldType {
    */
   public int getSerializedSize();
 
-  public <T> void serialize(T value, ByteBuf buffer);
+  public <T> void serialize(T value, ChannelBuffer buffer);
 
-  public <T> T deserialize(ByteBuf buffer);
+  public <T> T deserialize(ChannelBuffer buffer);
 
   public Field newVariableValue(String name);
 

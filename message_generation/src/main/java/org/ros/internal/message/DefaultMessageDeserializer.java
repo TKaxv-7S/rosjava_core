@@ -16,7 +16,7 @@
 
 package org.ros.internal.message;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.internal.message.field.Field;
 import org.ros.message.MessageDeserializer;
 import org.ros.message.MessageFactory;
@@ -38,7 +38,7 @@ public class DefaultMessageDeserializer<T> implements MessageDeserializer<T> {
 
   @SuppressWarnings("unchecked")
   @Override
-  public T deserialize(ByteBuf buffer) {
+  public T deserialize(ChannelBuffer buffer) {
     Message message = messageFactory.newFromType(messageIdentifier.getType());
     for (Field field : message.toRawMessage().getFields()) {
       if (!field.isConstant()) {

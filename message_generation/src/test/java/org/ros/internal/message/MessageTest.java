@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,17 +16,18 @@
 
 package org.ros.internal.message;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.common.collect.Lists;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 import org.junit.Before;
 import org.junit.Test;
 import org.ros.internal.message.topic.TopicDefinitionResourceProvider;
 import org.ros.message.MessageFactory;
 
 import java.nio.ByteOrder;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
@@ -122,8 +123,7 @@ public class MessageTest {
     topicDefinitionResourceProvider.add("foo/foo", "int8[] data");
     RawMessage rawMessage = messageFactory.newFromType("foo/foo");
     byte[] rawData = new byte[] { (byte) 1, (byte) 2, (byte) 3 };
-    ByteBuf data = Unpooled.wrappedBuffer(rawData);
-    data.order(ByteOrder.LITTLE_ENDIAN);
+    ChannelBuffer data = ChannelBuffers.wrappedBuffer(ByteOrder.LITTLE_ENDIAN, rawData);
     rawMessage.setInt8Array("data", rawData);
     assertEquals(data, rawMessage.getInt8Array("data"));
   }

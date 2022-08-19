@@ -16,14 +16,14 @@
 
 package org.ros.internal.node.service;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
  */
 class ServiceServerResponse {
   
-  private ByteBuf message;
+  private ChannelBuffer message;
   private int errorCode;
   private int messageLength;
 
@@ -35,11 +35,11 @@ class ServiceServerResponse {
     return errorCode;
   }
 
-  public void setMessage(ByteBuf buffer) {
+  public void setMessage(ChannelBuffer buffer) {
     message = buffer;
   }
 
-  public ByteBuf getMessage() {
+  public ChannelBuffer getMessage() {
     return message;
   }
 

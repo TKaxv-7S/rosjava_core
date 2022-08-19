@@ -16,13 +16,13 @@
 
 package org.ros.internal.transport;
 
-import io.netty.channel.group.ChannelGroup;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelStateEvent;
-import io.netty.channel.ExceptionEvent;
-import io.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.group.ChannelGroup;
 import org.ros.exception.RosRuntimeException;
 
 import java.io.IOException;

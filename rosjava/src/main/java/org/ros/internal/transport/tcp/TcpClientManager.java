@@ -18,10 +18,9 @@ package org.ros.internal.transport.tcp;
 
 import com.google.common.collect.Lists;
 
-import io.netty.channel.Channel;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 
 import java.net.SocketAddress;
 import java.util.Collection;
@@ -40,7 +39,7 @@ public class TcpClientManager {
 
   public TcpClientManager(Executor executor) {
     this.executor = executor;
-    channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    channelGroup = new DefaultChannelGroup();
     tcpClients = Lists.newArrayList();
     namedChannelHandlers = Lists.newArrayList();
   }

@@ -18,7 +18,7 @@ package org.ros.internal.transport;
 
 import static org.junit.Assert.assertEquals;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.junit.Test;
 
 /**

@@ -18,7 +18,7 @@ package org.ros.internal.message.field;
 
 import com.google.common.base.Preconditions;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 
 import java.util.Arrays;
 
@@ -54,7 +54,7 @@ public class DoubleArrayField extends Field {
   }
 
   @Override
-  public void serialize(ByteBuf buffer) {
+  public void serialize(ChannelBuffer buffer) {
     if (size < 0) {
       buffer.writeInt(value.length);
     }
@@ -64,7 +64,7 @@ public class DoubleArrayField extends Field {
   }
 
   @Override
-  public void deserialize(ByteBuf buffer) {
+  public void deserialize(ChannelBuffer buffer) {
     int currentSize = size;
     if (currentSize < 0) {
       currentSize = buffer.readInt();

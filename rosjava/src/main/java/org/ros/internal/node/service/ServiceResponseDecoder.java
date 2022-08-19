@@ -16,10 +16,10 @@
 
 package org.ros.internal.node.service;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.replay.ReplayingDecoder;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.handler.codec.replay.ReplayingDecoder;
 
 /**
  * Decodes service responses.
@@ -37,7 +37,7 @@ class ServiceResponseDecoder<ResponseType> extends
 
   @SuppressWarnings("fallthrough")
   @Override
-  protected Object decode(ChannelHandlerContext ctx, Channel channel, ByteBuf buffer,
+  protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer,
       ServiceResponseDecoderState state) throws Exception {
     switch (state) {
       case ERROR_CODE:

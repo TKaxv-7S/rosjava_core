@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.ros.internal.message.MessageBuffers;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.junit.Test;
 
 /**
@@ -38,7 +38,7 @@ public class ArrayFieldTest {
     boolean[] value = new boolean[] { true, false, true, false };
     field.setValue(value);
     assertEquals(PrimitiveFieldType.BOOL, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 4, 0, 0, 0, 1, 0, 1, 0 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -51,7 +51,7 @@ public class ArrayFieldTest {
     BooleanArrayField field = BooleanArrayField.newVariable("foo", 4);
     field.setValue(new boolean[] { true, false, true, false });
     assertEquals(PrimitiveFieldType.BOOL, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 1, 0, 1, 0 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -72,7 +72,7 @@ public class ArrayFieldTest {
     ByteArrayField field = ByteArrayField.newVariable(type, "foo", -1);
     field.setValue(new byte[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 4, 0, 0, 0, 1, 2, 3, 4 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -93,7 +93,7 @@ public class ArrayFieldTest {
     ByteArrayField field = ByteArrayField.newVariable(type, "foo", 4);
     field.setValue(new byte[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 1, 2, 3, 4 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -106,7 +106,7 @@ public class ArrayFieldTest {
     DoubleArrayField field = DoubleArrayField.newVariable("foo", -1);
     field.setValue(new double[] { 1, 2, 3, 4 });
     assertEquals(PrimitiveFieldType.FLOAT64, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected =
         new byte[] { 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, -16, 63, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0,
@@ -121,7 +121,7 @@ public class ArrayFieldTest {
     DoubleArrayField field = DoubleArrayField.newVariable("foo", 4);
     field.setValue(new double[] { 1, 2, 3, 4 });
     assertEquals(PrimitiveFieldType.FLOAT64, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected =
         new byte[] { 0, 0, 0, 0, 0, 0, -16, 63, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 8, 64,
@@ -136,7 +136,7 @@ public class ArrayFieldTest {
     FloatArrayField field = FloatArrayField.newVariable("foo", -1);
     field.setValue(new float[] { 1, 2, 3, 4 });
     assertEquals(PrimitiveFieldType.FLOAT32, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected =
         new byte[] { 4, 0, 0, 0, 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64 };
@@ -150,7 +150,7 @@ public class ArrayFieldTest {
     FloatArrayField field = FloatArrayField.newVariable("foo", 4);
     field.setValue(new float[] { 1, 2, 3, 4 });
     assertEquals(PrimitiveFieldType.FLOAT32, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 0, 0, -128, 63, 0, 0, 0, 64, 0, 0, 64, 64, 0, 0, -128, 64 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -168,7 +168,7 @@ public class ArrayFieldTest {
     IntegerArrayField field = IntegerArrayField.newVariable(type, "foo", -1);
     field.setValue(new int[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 4, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -186,7 +186,7 @@ public class ArrayFieldTest {
     IntegerArrayField field = IntegerArrayField.newVariable(type, "foo", 4);
     field.setValue(new int[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -204,7 +204,7 @@ public class ArrayFieldTest {
     LongArrayField field = LongArrayField.newVariable(type, "foo", -1);
     field.setValue(new long[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected =
         new byte[] { 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0,
@@ -224,7 +224,7 @@ public class ArrayFieldTest {
     LongArrayField field = LongArrayField.newVariable(type, "foo", 4);
     field.setValue(new long[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected =
         new byte[] { 1, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 4, 0,
@@ -244,7 +244,7 @@ public class ArrayFieldTest {
     ShortArrayField field = ShortArrayField.newVariable(type, "foo", -1);
     field.setValue(new short[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 4, 0, 0, 0, 1, 0, 2, 0, 3, 0, 4, 0 };
     byte[] actual = new byte[buffer.readableBytes()];
@@ -262,7 +262,7 @@ public class ArrayFieldTest {
     ShortArrayField field = ShortArrayField.newVariable(type, "foo", 4);
     field.setValue(new short[] { 1, 2, 3, 4 });
     assertEquals(type, field.getType());
-    ByteBuf buffer = MessageBuffers.dynamicBuffer();
+    ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
     field.serialize(buffer);
     byte[] expected = new byte[] { 1, 0, 2, 0, 3, 0, 4, 0 };
     byte[] actual = new byte[buffer.readableBytes()];

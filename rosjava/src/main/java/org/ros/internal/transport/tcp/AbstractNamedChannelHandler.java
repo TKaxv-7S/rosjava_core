@@ -16,7 +16,7 @@
 
 package org.ros.internal.transport.tcp;
 
-import io.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.SimpleChannelHandler;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)

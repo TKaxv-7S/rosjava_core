@@ -16,12 +16,11 @@
 
 package org.ros.internal.transport.tcp;
 
-import static io.netty.channel.Channels.pipeline;
+import static org.jboss.netty.channel.Channels.pipeline;
 
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPipelineFactory;
-import io.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.group.ChannelGroup;
 import org.ros.internal.transport.ConnectionTrackingHandler;
 
 /**

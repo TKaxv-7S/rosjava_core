@@ -18,15 +18,14 @@ package org.ros.internal.transport.queue;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import io.netty.util.concurrent.GlobalEventExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.ChannelGroupFuture;
-import io.netty.channel.group.ChannelGroupFutureListener;
-import io.netty.channel.group.DefaultChannelGroup;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.group.ChannelGroup;
+import org.jboss.netty.channel.group.ChannelGroupFuture;
+import org.jboss.netty.channel.group.ChannelGroupFutureListener;
+import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.ros.concurrent.CancellableLoop;
 import org.ros.concurrent.CircularBlockingDeque;
 import org.ros.internal.message.MessageBufferPool;
@@ -50,7 +49,7 @@ public class OutgoingMessageQueue<T> {
   private final ChannelGroup channelGroup;
   private final Writer writer;
   private final MessageBufferPool messageBufferPool;
-  private final ByteBuf latchedBuffer;
+  private final ChannelBuffer latchedBuffer;
   private final Object mutex;
 
   private boolean latchMode;
@@ -60,7 +59,7 @@ public class OutgoingMessageQueue<T> {
     @Override
     public void loop() throws InterruptedException {
       T message = deque.takeFirst();
-      final ByteBuf buffer = messageBufferPool.acquire();
+      final ChannelBuffer buffer = messageBufferPool.acquire();
       serializer.serialize(message, buffer);
       if (DEBUG) {
         log.info(String.format("Writing %d bytes to %d channels.", buffer.readableBytes(),
@@ -82,7 +81,7 @@ public class OutgoingMessageQueue<T> {
   public OutgoingMessageQueue(MessageSerializer<T> serializer, ExecutorService executorService) {
     this.serializer = serializer;
     deque = new CircularBlockingDeque<T>(DEQUE_CAPACITY);
-    channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    channelGroup = new DefaultChannelGroup();
     writer = new Writer();
     messageBufferPool = new MessageBufferPool();
     latchedBuffer = MessageBuffers.dynamicBuffer();

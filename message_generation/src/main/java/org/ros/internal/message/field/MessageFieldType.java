@@ -16,7 +16,7 @@
 
 package org.ros.internal.message.field;
 
-import io.netty.buffer.ByteBuf;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.internal.message.DefaultMessageDeserializer;
 import org.ros.internal.message.DefaultMessageSerializer;
 import org.ros.internal.message.Message;
@@ -88,13 +88,13 @@ public class MessageFieldType implements FieldType {
   }
 
   @Override
-  public <T> void serialize(T value, ByteBuf buffer) {
+  public <T> void serialize(T value, ChannelBuffer buffer) {
     serializer.serialize((Message) value, buffer);
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public Message deserialize(ByteBuf buffer) {
+  public Message deserialize(ChannelBuffer buffer) {
     return deserializer.deserialize(buffer);
   }
 

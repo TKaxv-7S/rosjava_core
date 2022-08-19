@@ -87,6 +87,6 @@ public class MessageDispatcherTest {
       lazyMessages.addLast(new LazyMessage<std_msgs.Int32>(message));
     }
 
-    assertTrue(latch.await(1, TimeUnit.SECONDS));
+    assertTrue(latch.await(5, TimeUnit.SECONDS));
   }
 }

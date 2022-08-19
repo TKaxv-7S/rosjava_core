@@ -16,8 +16,8 @@
 
 package org.ros.internal.message.field;
 
+import org.jboss.netty.buffer.ChannelBuffer;
 
-import io.netty.buffer.ByteBuf;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
@@ -66,9 +66,9 @@ public abstract class Field {
     return String.format("%s %s\n", getType().getMd5String(), getName());
   }
 
-  public abstract void serialize(ByteBuf buffer);
+  public abstract void serialize(ChannelBuffer buffer);
 
-  public abstract void deserialize(ByteBuf buffer);
+  public abstract void deserialize(ChannelBuffer buffer);
 
   public abstract <T> T getValue();
 
