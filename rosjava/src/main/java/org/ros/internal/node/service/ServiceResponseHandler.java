@@ -17,26 +17,27 @@
 package org.ros.internal.node.service;
 
 import com.google.common.base.Preconditions;
-
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.MessageEvent;
-import io.netty.channel.SimpleChannelHandler;
+import io.netty.channel.ChannelDuplexHandler;
 import org.ros.exception.RemoteException;
 import org.ros.internal.node.response.StatusCode;
 import org.ros.message.MessageDeserializer;
 import org.ros.node.service.ServiceResponseListener;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 
 /**
- * A Netty {@link SimpleChannelHandler} for service responses.
+ * A Netty {@link ChannelDuplexHandler} for service responses.
  * 
  * @author damonkohler@google.com (Damon Kohler)
  */
-class ServiceResponseHandler<ResponseType> extends SimpleChannelHandler {
+class ServiceResponseHandler<ResponseType> extends ChannelDuplexHandler {
 
   private final Queue<ServiceResponseListener<ResponseType>> responseListeners;
   private final MessageDeserializer<ResponseType> deserializer;
@@ -61,7 +62,7 @@ class ServiceResponseHandler<ResponseType> extends SimpleChannelHandler {
         if (response.getErrorCode() == 1) {
           listener.onSuccess(deserializer.deserialize(buffer));
         } else {
-          String message = Charset.forName("US-ASCII").decode(buffer.toByteBuffer()).toString();
+          String message = StandardCharsets.US_ASCII.decode(buffer.toByteBuffer()).toString();
           listener.onFailure(new RemoteException(StatusCode.ERROR, message));
         }
       }

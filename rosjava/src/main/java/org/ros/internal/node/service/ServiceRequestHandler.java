@@ -20,7 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.MessageEvent;
-import io.netty.channel.SimpleChannelHandler;
+import io.netty.channel.ChannelDuplexHandler;
 import org.ros.exception.ServiceException;
 import org.ros.internal.message.MessageBufferPool;
 import org.ros.message.MessageDeserializer;
@@ -36,7 +36,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * @author damonkohler@google.com (Damon Kohler)
  */
-class ServiceRequestHandler<T, S> extends SimpleChannelHandler {
+class ServiceRequestHandler<T, S> extends ChannelDuplexHandler {
 
   private final ServiceDeclaration serviceDeclaration;
   private final ServiceResponseBuilder<T, S> responseBuilder;

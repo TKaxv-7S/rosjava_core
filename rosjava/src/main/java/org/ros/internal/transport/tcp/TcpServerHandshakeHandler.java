@@ -19,13 +19,9 @@ package org.ros.internal.transport.tcp;
 import com.google.common.base.Preconditions;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.channel.MessageEvent;
-import io.netty.channel.SimpleChannelHandler;
+import io.netty.channel.ChannelDuplexHandler;
 import org.ros.exception.RosRuntimeException;
 import org.ros.internal.node.server.NodeIdentifier;
 import org.ros.internal.node.service.DefaultServiceServer;
@@ -45,7 +41,7 @@ import org.ros.namespace.GraphName;
  * @author damonkohler@google.com (Damon Kohler)
  * @author kwc@willowgarage.com (Ken Conley)
  */
-public class TcpServerHandshakeHandler extends SimpleChannelHandler {
+public class TcpServerHandshakeHandler extends ChannelDuplexHandler {
 
   private final TopicParticipantManager topicParticipantManager;
   private final ServiceManager serviceManager;
@@ -111,6 +107,6 @@ public class TcpServerHandshakeHandler extends SimpleChannelHandler {
     // Once the handshake is complete, there will be nothing incoming on the
     // channel. So, we replace the handshake handler with a handler which will
     // drop everything.
-    pipeline.replace(this, "DiscardHandler", new SimpleChannelHandler());
+    pipeline.replace(this, "DiscardHandler", new ChannelDuplexHandler());
   }
 }

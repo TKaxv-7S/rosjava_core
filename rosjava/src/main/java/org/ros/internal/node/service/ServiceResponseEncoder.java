@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2011 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,27 +17,19 @@
 package org.ros.internal.node.service;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.oneone.OneToOneEncoder;
-import org.ros.internal.message.MessageBuffers;
+import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
  */
-public final class ServiceResponseEncoder extends OneToOneEncoder {
+public final class ServiceResponseEncoder extends MessageToByteEncoder<ServiceServerResponse> {
 
-  @Override
-  protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
-    if (msg instanceof ServiceServerResponse) {
-      ServiceServerResponse response = (ServiceServerResponse) msg;
-      ChannelBuffer buffer = MessageBuffers.dynamicBuffer();
-      buffer.writeByte(response.getErrorCode());
-      buffer.writeInt(response.getMessageLength());
-      buffer.writeBytes(response.getMessage());
-      return buffer;
-    } else {
-      return msg;
+    @Override
+    protected void encode(ChannelHandlerContext channelHandlerContext, ServiceServerResponse response, ByteBuf byteBuf) throws Exception {
+        byteBuf.writeByte(response.getErrorCode());
+        byteBuf.writeInt(response.getMessageLength());
+        byteBuf.writeBytes(response.getMessage());
     }
-  }
+
 }

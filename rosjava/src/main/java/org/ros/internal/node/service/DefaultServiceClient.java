@@ -118,7 +118,7 @@ public class DefaultServiceClient<T, S> implements ServiceClient<T, S> {
     // TODO(damonkohler): Support non-persistent connections.
     connectionHeader.addField(ConnectionHeaderFields.PERSISTENT, "1");
     connectionHeader.merge(serviceDeclaration.toConnectionHeader());
-    tcpClientManager = new TcpClientManager(executorService);
+    tcpClientManager = new TcpClientManager();
     final ServiceClientHandshakeHandler<T, S> serviceClientHandshakeHandler =
         new ServiceClientHandshakeHandler<T, S>(connectionHeader, responseListeners, deserializer,
             executorService);

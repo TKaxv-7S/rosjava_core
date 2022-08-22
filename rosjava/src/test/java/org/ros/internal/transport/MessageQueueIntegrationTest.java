@@ -29,7 +29,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelStateEvent;
 import io.netty.channel.ExceptionEvent;
-import io.netty.channel.SimpleChannelHandler;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannelFactory;
@@ -78,7 +78,7 @@ public class MessageQueueIntegrationTest {
   private IncomingMessageQueue<std_msgs.String> secondIncomingMessageQueue;
   private std_msgs.String expectedMessage;
 
-  private class ServerHandler extends SimpleChannelHandler {
+  private class ServerHandler extends ChannelDuplexHandler {
     @Override
     public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
       if (DEBUG) {
@@ -123,9 +123,9 @@ public class MessageQueueIntegrationTest {
     secondIncomingMessageQueue =
         new IncomingMessageQueue<std_msgs.String>(new DefaultMessageDeserializer<std_msgs.String>(
             MessageIdentifier.of(std_msgs.String._TYPE), topicMessageFactory), executorService);
-    firstTcpClientManager = new TcpClientManager(executorService);
+    firstTcpClientManager = new TcpClientManager();
     firstTcpClientManager.addNamedChannelHandler(firstIncomingMessageQueue.getMessageReceiver());
-    secondTcpClientManager = new TcpClientManager(executorService);
+    secondTcpClientManager = new TcpClientManager();
     secondTcpClientManager.addNamedChannelHandler(secondIncomingMessageQueue.getMessageReceiver());
   }
 

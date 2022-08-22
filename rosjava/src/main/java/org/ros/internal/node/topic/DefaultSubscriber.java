@@ -82,7 +82,7 @@ public class DefaultSubscriber<T> extends DefaultTopicParticipant implements Sub
     this.executorService = executorService;
     incomingMessageQueue = new IncomingMessageQueue<T>(deserializer, executorService);
     knownPublishers = Sets.newHashSet();
-    tcpClientManager = new TcpClientManager(executorService);
+    tcpClientManager = new TcpClientManager();
     mutex = new Object();
     SubscriberHandshakeHandler<T> subscriberHandshakeHandler =
         new SubscriberHandshakeHandler<T>(toDeclaration().toConnectionHeader(),

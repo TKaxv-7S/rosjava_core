@@ -16,14 +16,12 @@
 
 package org.ros.internal.transport.tcp;
 
-import io.netty.channel.ChannelDownstreamHandler;
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelUpstreamHandler;
 
 /**
  * @author damonkohler@google.com (Damon Kohler)
  */
-public interface NamedChannelHandler extends ChannelUpstreamHandler, ChannelDownstreamHandler {
+public interface NamedChannelHandler extends ChannelHandler {
 
   /**
    * @return the name of this {@link ChannelHandler}
