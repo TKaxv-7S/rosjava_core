@@ -23,17 +23,86 @@
     </properties>
 
     <build>
+
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createSourcesJar>false</createSourcesJar>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <artifactSet>
+                                <includes>
+                                    <!-- 包含的模块 -->
+                                    <include>org.ros.rosjava_core:apache_xmlrpc_common</include>
+                                    <include>org.ros.rosjava_core:apache_xmlrpc_client</include>
+                                    <include>org.ros.rosjava_core:apache_xmlrpc_server</include>
+                                    <include>org.ros.rosjava_core:message_generation</include>
+                                </includes>
+                            </artifactSet>
+                            <transformers>
+
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.4.2</version>
+                &lt;!&ndash;<executions>
+                    &lt;!&ndash; 执行本插件的方法为，在主目录下执行如下命令： mvn package assembly:single &ndash;&gt;
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            &lt;!&ndash; 此处 IntelliJ IDEA 可能会报红，这是正常现象 &ndash;&gt;
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>&ndash;&gt;
+                <configuration>
+                    &lt;!&ndash; 设置打包后的 JAR 包的目录结构为默认 &ndash;&gt;
+                    <descriptorRefs>
+                        <descriptorRef>project</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            &lt;!&ndash; 是否指定项目classpath下的依赖 &ndash;&gt;
+                            <addClasspath>false</addClasspath>
+                            &lt;!&ndash; 指定依赖的时候声明前缀 &ndash;&gt;
+                            &lt;!&ndash;<classpathPrefix>./</classpathPrefix>&ndash;&gt;
+                            &lt;!&ndash; 配置程序运行入口所在的类 &ndash;&gt;
+&lt;!&ndash;                            <mainClass>包名.类名</mainClass>&ndash;&gt;
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>-->
+
         </plugins>
+
     </build>
 
     <dependencyManagement>
