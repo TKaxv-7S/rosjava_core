@@ -38,6 +38,7 @@
                         </goals>
                         <configuration>
                             <createSourcesJar>false</createSourcesJar>
+                            <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
                             <artifactSet>

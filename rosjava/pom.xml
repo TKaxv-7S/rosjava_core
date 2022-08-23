@@ -3,15 +3,11 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-    <parent>
-        <artifactId>rosjava-all</artifactId>
-        <groupId>org.ros.rosjava_core</groupId>
-        <version>0.3.7</version>
-    </parent>
-
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.ros.rosjava_core</groupId>
     <artifactId>rosjava</artifactId>
     <packaging>jar</packaging>
+    <version>0.3.7</version>
 
     <properties>
         <rosjava-all.version>0.3.7</rosjava-all.version>
@@ -23,12 +19,14 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.8.0</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -41,78 +39,91 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
             <version>2.17.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ws.commons</groupId>
-            <artifactId>ws-commons-util</artifactId>
-            <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
             <version>2.1.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>ws-commons-util</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_core</groupId>
             <artifactId>apache_xmlrpc_common</artifactId>
             <version>${rosjava-all.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_core</groupId>
             <artifactId>apache_xmlrpc_server</artifactId>
             <version>${rosjava-all.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_core</groupId>
             <artifactId>apache_xmlrpc_client</artifactId>
             <version>${rosjava-all.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_core</groupId>
             <artifactId>message_generation</artifactId>
             <version>${rosjava-all.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_messages</groupId>
             <artifactId>rosgraph_msgs</artifactId>
             <version>1.11.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_messages</groupId>
             <artifactId>geometry_msgs</artifactId>
             <version>1.12.7</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_messages</groupId>
             <artifactId>nav_msgs</artifactId>
             <version>1.12.7</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_messages</groupId>
             <artifactId>tf2_msgs</artifactId>
             <version>0.5.20</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.ros.rosjava_messages</groupId>
             <artifactId>std_msgs</artifactId>
             <version>0.5.11</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- test -->
@@ -139,5 +150,40 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>maven.repo1</id>
+            <name>maven repo1</name>
+            <url>https://repo1.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>maven.github</id>
+            <name>maven github</name>
+            <url>https://raw.githubusercontent.com/rosjava/rosjava_mvn_repo/master/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <!--<repository>
+            <id>maven.springsource</id>
+            <name>maven springsource</name>
+            <url>http://repository.springsource.com/maven/bundles/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>-->
+    </repositories>
 
 </project>

@@ -11,6 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apache_xmlrpc_common</artifactId>
+    <version>0.3.7</version>
 
     <dependencies>
 
@@ -24,6 +25,7 @@
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>ws-commons-util</artifactId>
             <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
