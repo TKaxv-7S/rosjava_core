@@ -78,7 +78,7 @@ public class DefaultNodeTest extends RosTest {
       }
     }, nodeConfiguration);
 
-    assertTrue(holder.await(1, TimeUnit.SECONDS));
+    assertTrue(holder.await(5, TimeUnit.SECONDS));
     assertTrue(holder.get().getPort() > 0);
     assertEquals(holder.get().getHostName(), host);
   }

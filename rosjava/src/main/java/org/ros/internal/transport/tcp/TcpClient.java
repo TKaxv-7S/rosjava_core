@@ -19,12 +19,12 @@ package org.ros.internal.transport.tcp;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.BootstrapConfig;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.ros.exception.RosRuntimeException;
 import org.slf4j.Logger;
@@ -53,13 +53,14 @@ public class TcpClient {
 
     private Channel channel;
 
-    public TcpClient(final ChannelGroup channelGroup) {
+    public TcpClient(final ChannelGroup channelGroup, final Executor executor) {
         this.channelGroup = channelGroup;
         //channelFactory = new channelFactory(executor, executor);
         //已处理
         //channelBufferFactory = new HeapChannelBufferFactory(ByteOrder.LITTLE_ENDIAN);
         bootstrap = new Bootstrap();
         bootstrap.channel(NioSocketChannel.class);
+        bootstrap.group(new NioEventLoopGroup(2, executor));
         //bootstrap.channelFactory(channelFactory);
 //    bootstrap = new ClientBootstrap(channelFactory);
         //bootstrap.option("bufferFactory", channelBufferFactory);
@@ -85,17 +86,18 @@ public class TcpClient {
     }
 
     public void connect(final String connectionName, final SocketAddress socketAddress) {
-        final TcpClientPipelineFactory tcpClientPipelineFactory = new TcpClientPipelineFactory(channelGroup) {
+        TcpClientPipelineFactory tcpClientPipelineFactory = new TcpClientPipelineFactory(channelGroup);
+        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
             @Override
-            public ChannelPipeline getPipeline() {
-                final ChannelPipeline pipeline = super.getPipeline();
+            protected void initChannel(SocketChannel ch) throws Exception {
+                ChannelPipeline pipeline = ch.pipeline();
+                tcpClientPipelineFactory.getPipeline(pipeline);
                 for (final NamedChannelHandler namedChannelHandler : namedChannelHandlers) {
                     pipeline.addLast(namedChannelHandler.getName(), namedChannelHandler);
                 }
-                return pipeline;
             }
-        };
-        bootstrap.setPipelineFactory(tcpClientPipelineFactory);
+        });
         final ChannelFuture future = bootstrap.connect(socketAddress).awaitUninterruptibly();
         if (future.isSuccess()) {
             channel = future.channel();
@@ -116,5 +118,21 @@ public class TcpClient {
         Preconditions.checkNotNull(channel);
         Preconditions.checkNotNull(buffer);
         return channel.write(buffer);
+    }
+
+    /**
+     * Close all incoming connections and the server socket.
+     *
+     * <p>
+     * Calling this method more than once has no effect.
+     */
+    public void shutdown() {
+        log.info("Ros Client Shutting down: " + channel.localAddress());
+        if (channel != null) {
+            channel.close().awaitUninterruptibly();
+        }
+        BootstrapConfig config = bootstrap.config();
+        //关闭主线程组
+        config.group().shutdownGracefully();
     }
 }

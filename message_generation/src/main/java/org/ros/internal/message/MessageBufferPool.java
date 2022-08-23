@@ -17,6 +17,7 @@
 package org.ros.internal.message;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.commons.pool.impl.StackObjectPool;
@@ -69,7 +70,8 @@ public class MessageBufferPool {
    */
   public ByteBuf acquire() {
     try {
-      return pool.borrowObject();
+      return MessageBuffers.dynamicBuffer();
+//      return pool.borrowObject();
     } catch (Exception e) {
       throw new RosMessageRuntimeException(e);
     }
@@ -83,7 +85,10 @@ public class MessageBufferPool {
    */
   public void release(ByteBuf channelBuffer) {
     try {
-      pool.returnObject(channelBuffer);
+      while (channelBuffer.refCnt() > 0) {
+        ReferenceCountUtil.release(channelBuffer);
+      }
+//      pool.returnObject(channelBuffer);
     } catch (Exception e) {
       throw new RosMessageRuntimeException(e);
     }

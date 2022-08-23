@@ -18,6 +18,7 @@ package org.ros.internal.transport.tcp;
 
 import com.google.common.base.Preconditions;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.bootstrap.ServerBootstrapConfig;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
@@ -56,8 +57,6 @@ public class TcpRosServer {
     private final TopicParticipantManager topicParticipantManager;
     private final ServiceManager serviceManager;
     private final ScheduledExecutorService executorService;
-
-    private ChannelFactory<ServerChannel> channelFactory;
     private ServerBootstrap bootstrap;
     private Channel outgoingChannel;
     private ChannelGroup incomingChannelGroup;
@@ -74,23 +73,30 @@ public class TcpRosServer {
 
     public void start() {
         Preconditions.checkState(outgoingChannel == null);
-        bootstrap = new ServerBootstrap(new NioEventLoopGroup((Math.max(config.getBossLoopThreadCount(), 2))), new NioEventLoopGroup(config.getEventLoopThreadCount()));
+        bootstrap = new ServerBootstrap();
+        bootstrap.group(new NioEventLoopGroup(2, executorService), new NioEventLoopGroup(11, executorService));
         bootstrap.channel(NioServerSocketChannel.class);
         //已处理
         //bootstrap.option("child.bufferFactory", new HeapChannelBufferFactory(ByteOrder.LITTLE_ENDIAN));
         incomingChannelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
         bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+
+        TcpServerPipelineFactory tcpServerPipelineFactory = new TcpServerPipelineFactory(incomingChannelGroup, topicParticipantManager, serviceManager);
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
-                new TcpServerPipelineFactory(incomingChannelGroup, topicParticipantManager, serviceManager).addPipeline(pipeline);
+                tcpServerPipelineFactory.getPipeline(pipeline);
             }
         });
 
         ChannelFuture bind = bootstrap.bind(bindAddress.toInetSocketAddress());
-        outgoingChannel = bind.channel();
+        try {
+            outgoingChannel = bind.sync().channel();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         advertiseAddress.setPortCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
@@ -110,13 +116,16 @@ public class TcpRosServer {
      * Calling this method more than once has no effect.
      */
     public void shutdown() {
-        if (DEBUG) {
-            log.info("Shutting down: " + getAddress());
-        }
+        log.info("Ros Server Shutting down: " + getAddress());
         if (outgoingChannel != null) {
             outgoingChannel.close().awaitUninterruptibly();
         }
         incomingChannelGroup.close().awaitUninterruptibly();
+        ServerBootstrapConfig config = bootstrap.config();
+        //关闭主线程组
+        config.group().shutdownGracefully();
+        //关闭工作线程组
+        config.childGroup().shutdownGracefully();
         // NOTE(damonkohler): We are purposely not calling
         // channelFactory.releaseExternalResources() or
         // bootstrap.releaseExternalResources() since only external resources are

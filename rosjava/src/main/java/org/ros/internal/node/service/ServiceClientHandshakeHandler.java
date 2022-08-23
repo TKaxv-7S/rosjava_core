@@ -16,9 +16,9 @@
 
 package org.ros.internal.node.service;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.MessageEvent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ros.internal.transport.BaseClientHandshakeHandler;
@@ -57,13 +57,7 @@ class ServiceClientHandshakeHandler<T, S> extends BaseClientHandshakeHandler {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
-    }
-
-    @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        super.channelRegistered(ctx);
+    protected void onSuccess(ConnectionHeader incomingConnectionHeader, ChannelHandlerContext ctx, ByteBuf byteBuf) {
         ChannelPipeline pipeline = ctx.channel().pipeline();
         pipeline.remove(TcpClientPipelineFactory.LENGTH_FIELD_BASED_FRAME_DECODER);
         pipeline.remove(ServiceClientHandshakeHandler.this);
@@ -73,20 +67,9 @@ class ServiceClientHandshakeHandler<T, S> extends BaseClientHandshakeHandler {
     }
 
     @Override
-    protected void onSuccess(ConnectionHeader incommingConnectionHeader, ChannelHandlerContext ctx,
-                             MessageEvent e) {
-        ChannelPipeline pipeline = ctx.channel().pipeline();
-        pipeline.remove(TcpClientPipelineFactory.LENGTH_FIELD_BASED_FRAME_DECODER);
-        pipeline.remove(ServiceClientHandshakeHandler.this);
-        pipeline.addLast("ResponseDecoder", new ServiceResponseDecoder<S>());
-        pipeline.addLast("ResponseHandler", new ServiceResponseHandler<S>(responseListeners,
-                deserializer, executorService));
-    }
-
-    @Override
-    protected void onFailure(String errorMessage, ChannelHandlerContext ctx, MessageEvent e) {
+    protected void onFailure(String errorMessage, ChannelHandlerContext ctx, ByteBuf byteBuf) {
         log.error("Service client handshake failed: " + errorMessage);
-        e.getChannel().close();
+        ctx.channel().close();
     }
 
     @Override

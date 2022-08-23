@@ -36,11 +36,10 @@ public class TcpClientPipelineFactory extends ConnectionTrackingChannelPipelineF
     }
 
     @Override
-    public ChannelPipeline getPipeline() {
-        ChannelPipeline pipeline = super.getPipeline();
-        pipeline.addLast(LENGTH_FIELD_PREPENDER, new LengthFieldPrepender(4));
-        pipeline.addLast(LENGTH_FIELD_BASED_FRAME_DECODER, new LengthFieldBasedFrameDecoder(
+    public void getPipeline(ChannelPipeline channelPipeline) {
+        super.getPipeline(channelPipeline);
+        channelPipeline.addLast(LENGTH_FIELD_PREPENDER, new LengthFieldPrepender(4));
+        channelPipeline.addLast(LENGTH_FIELD_BASED_FRAME_DECODER, new LengthFieldBasedFrameDecoder(
                 ByteOrder.LITTLE_ENDIAN, Integer.MAX_VALUE, 0, 4, 0, 4, true));
-        return pipeline;
     }
 }

@@ -122,8 +122,7 @@ public class MessageTest {
     topicDefinitionResourceProvider.add("foo/foo", "int8[] data");
     RawMessage rawMessage = messageFactory.newFromType("foo/foo");
     byte[] rawData = new byte[] { (byte) 1, (byte) 2, (byte) 3 };
-    ByteBuf data = Unpooled.wrappedBuffer(rawData);
-    data.order(ByteOrder.LITTLE_ENDIAN);
+    ByteBuf data = Unpooled.wrappedBuffer(rawData).order(ByteOrder.LITTLE_ENDIAN);
     rawMessage.setInt8Array("data", rawData);
     assertEquals(data, rawMessage.getInt8Array("data"));
   }

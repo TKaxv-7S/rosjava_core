@@ -89,7 +89,7 @@ public class TcpRosServerTest {
               AdvertiseAddress.newPublic(), null, null, executorService);
       secondServer.start();
       fail();
-    } catch (RuntimeException e) {
+    } catch (Exception e) {
       // Starting a server on an already used port must fail.
     }
     firstServer.shutdown();

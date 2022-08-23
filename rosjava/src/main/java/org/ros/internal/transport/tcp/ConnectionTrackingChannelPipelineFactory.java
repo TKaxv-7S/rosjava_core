@@ -33,7 +33,7 @@ public class ConnectionTrackingChannelPipelineFactory {
         this.connectionTrackingHandler = new ConnectionTrackingHandler(channelGroup);
     }
 
-    public void addPipeline(ChannelPipeline channelPipeline) {
+    public void getPipeline(ChannelPipeline channelPipeline) {
         channelPipeline.addLast(CONNECTION_TRACKING_HANDLER, connectionTrackingHandler);
     }
 }

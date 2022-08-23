@@ -50,7 +50,6 @@ public class OutgoingMessageQueue<T> {
   private final ChannelGroup channelGroup;
   private final Writer writer;
   private final MessageBufferPool messageBufferPool;
-  private final ByteBuf latchedBuffer;
   private final Object mutex;
 
   private boolean latchMode;
@@ -85,7 +84,6 @@ public class OutgoingMessageQueue<T> {
     channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     writer = new Writer();
     messageBufferPool = new MessageBufferPool();
-    latchedBuffer = MessageBuffers.dynamicBuffer();
     mutex = new Object();
     latchMode = false;
     executorService.execute(writer);
@@ -141,7 +139,7 @@ public class OutgoingMessageQueue<T> {
   // changed.
   private void writeLatchedMessage(Channel channel) {
     synchronized (mutex) {
-      latchedBuffer.clear();
+      ByteBuf latchedBuffer = MessageBuffers.dynamicBuffer();
       serializer.serialize(latchedMessage, latchedBuffer);
       channel.write(latchedBuffer);
     }

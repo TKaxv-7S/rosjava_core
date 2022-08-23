@@ -54,10 +54,9 @@ public class ChannelBufferField extends Field {
   public void setValue(Object value) {
     ByteBuf channelBufferValue = null;
     if (value instanceof byte[]) {
-      channelBufferValue = Unpooled.wrappedBuffer(byte[].class.cast(value));
-      channelBufferValue.order(ByteOrder.LITTLE_ENDIAN);
+      channelBufferValue = Unpooled.wrappedBuffer((byte[]) value).order(ByteOrder.LITTLE_ENDIAN);
     } else if (value instanceof ByteBuf) {
-      channelBufferValue = ByteBuf.class.cast(value);
+      channelBufferValue = (ByteBuf) value;
     }
     Preconditions.checkArgument(channelBufferValue.order() == ByteOrder.LITTLE_ENDIAN);
     Preconditions.checkArgument(size < 0 || channelBufferValue.readableBytes() == size);

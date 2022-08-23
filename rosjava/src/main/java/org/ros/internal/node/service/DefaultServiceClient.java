@@ -118,7 +118,7 @@ public class DefaultServiceClient<T, S> implements ServiceClient<T, S> {
     // TODO(damonkohler): Support non-persistent connections.
     connectionHeader.addField(ConnectionHeaderFields.PERSISTENT, "1");
     connectionHeader.merge(serviceDeclaration.toConnectionHeader());
-    tcpClientManager = new TcpClientManager();
+    tcpClientManager = new TcpClientManager(executorService);
     final ServiceClientHandshakeHandler<T, S> serviceClientHandshakeHandler =
         new ServiceClientHandshakeHandler<T, S>(connectionHeader, responseListeners, deserializer,
             executorService);
@@ -136,7 +136,7 @@ public class DefaultServiceClient<T, S> implements ServiceClient<T, S> {
     handshakeLatch.reset();
     tcpClient = tcpClientManager.connect(toString(), address);
     try {
-      if (!handshakeLatch.await(1, TimeUnit.SECONDS)) {
+      if (!handshakeLatch.await(10, TimeUnit.SECONDS)) {
         throw new RosRuntimeException(handshakeLatch.getErrorMessage());
       }
     } catch (final InterruptedException e) {

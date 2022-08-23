@@ -17,6 +17,7 @@
 package org.ros.internal.transport;
 
 import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
 import org.apache.commons.logging.Log;
@@ -31,6 +32,7 @@ import java.nio.channels.Channels;
  *
  * @author damonkohler@google.com (Damon Kohler)
  */
+@ChannelHandler.Sharable
 public class ConnectionTrackingHandler extends ChannelDuplexHandler {
 
     private static final boolean DEBUG = false;

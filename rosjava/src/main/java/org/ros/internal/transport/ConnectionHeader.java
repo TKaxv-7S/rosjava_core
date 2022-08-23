@@ -26,6 +26,7 @@ import org.ros.exception.RosRuntimeException;
 import org.ros.internal.message.MessageBuffers;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -99,7 +100,7 @@ public class ConnectionHeader {
     for (Entry<String, String> entry : fields.entrySet()) {
       String field = entry.getKey() + "=" + entry.getValue();
       buffer.writeInt(field.length());
-      buffer.writeBytes(field.getBytes(Charset.forName("US-ASCII")));
+      buffer.writeBytes(field.getBytes(StandardCharsets.US_ASCII));
     }
     return buffer;
   }

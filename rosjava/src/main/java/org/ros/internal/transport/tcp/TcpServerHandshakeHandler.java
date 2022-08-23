@@ -17,11 +17,8 @@
 package org.ros.internal.transport.tcp;
 
 import com.google.common.base.Preconditions;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
-import io.netty.channel.MessageEvent;
-import io.netty.channel.ChannelDuplexHandler;
 import org.ros.exception.RosRuntimeException;
 import org.ros.internal.node.server.NodeIdentifier;
 import org.ros.internal.node.service.DefaultServiceServer;
@@ -53,26 +50,26 @@ public class TcpServerHandshakeHandler extends ChannelDuplexHandler {
   }
 
   @Override
-  public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-    ChannelBuffer incomingBuffer = (ChannelBuffer) e.getMessage();
-    ChannelPipeline pipeline = e.getChannel().getPipeline();
+  public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    ByteBuf incomingBuffer = (ByteBuf) msg;
+    ChannelPipeline pipeline = ctx.channel().pipeline();
     ConnectionHeader incomingHeader = ConnectionHeader.decode(incomingBuffer);
     if (incomingHeader.hasField(ConnectionHeaderFields.SERVICE)) {
-      handleServiceHandshake(e, pipeline, incomingHeader);
+      handleServiceHandshake(ctx, pipeline, incomingHeader);
     } else {
-      handleSubscriberHandshake(ctx, e, pipeline, incomingHeader);
+      handleSubscriberHandshake(ctx, pipeline, incomingHeader);
     }
   }
 
-  private void handleServiceHandshake(MessageEvent e, ChannelPipeline pipeline,
+  private void handleServiceHandshake(ChannelHandlerContext ctx, ChannelPipeline pipeline,
       ConnectionHeader incomingHeader) {
     GraphName serviceName = GraphName.of(incomingHeader.getField(ConnectionHeaderFields.SERVICE));
     Preconditions.checkState(serviceManager.hasServer(serviceName));
     DefaultServiceServer<?, ?> serviceServer = serviceManager.getServer(serviceName);
-    e.getChannel().write(serviceServer.finishHandshake(incomingHeader));
+    ctx.channel().write(serviceServer.finishHandshake(incomingHeader));
     String probe = incomingHeader.getField(ConnectionHeaderFields.PROBE);
     if (probe != null && probe.equals("1")) {
-      e.getChannel().close();
+      ctx.channel().close();
     } else {
       pipeline.replace(TcpServerPipelineFactory.LENGTH_FIELD_PREPENDER, "ServiceResponseEncoder",
           new ServiceResponseEncoder());
@@ -80,7 +77,7 @@ public class TcpServerHandshakeHandler extends ChannelDuplexHandler {
     }
   }
 
-  private void handleSubscriberHandshake(ChannelHandlerContext ctx, MessageEvent e,
+  private void handleSubscriberHandshake(ChannelHandlerContext ctx,
       ChannelPipeline pipeline, ConnectionHeader incomingConnectionHeader)
       throws InterruptedException, Exception {
     Preconditions.checkState(incomingConnectionHeader.hasField(ConnectionHeaderFields.TOPIC),
@@ -90,15 +87,15 @@ public class TcpServerHandshakeHandler extends ChannelDuplexHandler {
     Preconditions.checkState(topicParticipantManager.hasPublisher(topicName),
         "No publisher for topic: " + topicName);
     DefaultPublisher<?> publisher = topicParticipantManager.getPublisher(topicName);
-    ChannelBuffer outgoingBuffer = publisher.finishHandshake(incomingConnectionHeader);
-    Channel channel = ctx.getChannel();
+    ByteBuf outgoingBuffer = publisher.finishHandshake(incomingConnectionHeader);
+    Channel channel = ctx.channel();
     if (incomingConnectionHeader.hasField(ConnectionHeaderFields.TCP_NODELAY)) {
       boolean tcpNoDelay = "1".equals(incomingConnectionHeader.getField(ConnectionHeaderFields.TCP_NODELAY));
-      channel.getConfig().setOption("tcpNoDelay", tcpNoDelay);
+      channel.config().setOption(ChannelOption.TCP_NODELAY, tcpNoDelay);
     }
     ChannelFuture future = channel.write(outgoingBuffer).await();
     if (!future.isSuccess()) {
-      throw new RosRuntimeException(future.getCause());
+      throw new RosRuntimeException(future.cause());
     }
     String nodeName = incomingConnectionHeader.getField(ConnectionHeaderFields.CALLER_ID);
     publisher.addSubscriber(new SubscriberIdentifier(NodeIdentifier.forName(nodeName),
