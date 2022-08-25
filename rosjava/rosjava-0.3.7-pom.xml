@@ -13,42 +13,6 @@
         <rosjava-all.version>0.3.7</rosjava-all.version>
     </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>false</createSourcesJar>
-                            <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                            <artifactSet>
-                                <includes>
-                                    <!-- 包含的模块 -->
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_common</include>
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_client</include>
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_server</include>
-                                    <include>org.ros.rosjava_core:message_generation</include>
-                                </includes>
-                            </artifactSet>
-                            <transformers>
-
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
 
         <dependency>
@@ -132,30 +96,6 @@
             <artifactId>ws-commons-util</artifactId>
             <version>1.0.1</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_common</artifactId>
-            <version>${rosjava-all.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_server</artifactId>
-            <version>${rosjava-all.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>apache_xmlrpc_client</artifactId>
-            <version>${rosjava-all.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ros.rosjava_core</groupId>
-            <artifactId>message_generation</artifactId>
-            <version>${rosjava-all.version}</version>
         </dependency>
 
         <dependency>

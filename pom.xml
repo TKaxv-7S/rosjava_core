@@ -28,34 +28,13 @@
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>false</createSourcesJar>
-                            <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
-                            <artifactSet>
-                                <includes>
-                                    <!-- 包含的模块 -->
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_common</include>
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_client</include>
-                                    <include>org.ros.rosjava_core:apache_xmlrpc_server</include>
-                                    <include>org.ros.rosjava_core:message_generation</include>
-                                </includes>
-                            </artifactSet>
-                            <transformers>
-
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
             </plugin>
 
             <!--<plugin>
